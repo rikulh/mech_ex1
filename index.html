@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>力学演習問題インタラクティブ解説</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        tags: 'ams' // AMS スタイルの数式番号付け
+      },
+      chtml: {
+        matchFontHeight: true // trueに設定してフォントの高さを一致させる（デフォルトに近い挙動）
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+      body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+      .mathjax-block { overflow-x: auto; overflow-y: hidden; padding-bottom: 4px; } /* MathJaxの長い数式用 */
+      #main-content h2 { font-size: 1.875rem; line-height: 2.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1.25rem; border-bottom: 2px solid #d1d5db; padding-bottom: 0.75rem; color: #1e3a8a; } /* text-3xl, text-blue-800 */
+      #main-content h3 { font-size: 1.5rem; line-height: 2rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; color: #1d4ed8; } /* text-2xl, text-blue-700 */
+      #main-content h4 { font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.75rem; color: #2563eb; } /* text-xl, text-blue-600 */
+      #main-content p { margin-bottom: 1.25rem; line-height: 1.75; font-size: 1rem; }
+      #main-content ul { list-style-type: disc; margin-left: 1.75rem; margin-bottom: 1.25rem; padding-left: 0.5rem;}
+      #main-content ol { list-style-type: decimal; margin-left: 1.75rem; margin-bottom: 1.25rem; padding-left: 0.5rem;}
+      #main-content table { width: auto; min-width: 50%; margin-bottom: 1.25rem; border-collapse: collapse; }
+      #main-content th, #main-content td { border: 1px solid #d1d5db; padding: 0.75rem 1rem; text-align: left; }
+      #main-content th { background-color: #f3f4f6; font-weight: 600; } /* bg-gray-100 */
+      #main-content mjx-container[display="true"] { margin-top: 1rem; margin-bottom: 1rem; text-align: left !important; } /* MathJaxの数式を左揃えに */
+      .active-nav { background-color: #0284c7; color: white; } /* Sky-600 */
+      .nav-link { transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
+      mjx-assistive-mml { display: none !important; } /* Hide MathJax assistive MML */
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-900 antialiased">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-screen-xl min-h-screen flex flex-col">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-sky-700">力学演習問題 インタラクティブ解説</h1>
+        </header>
+
+        <div class="flex flex-col md:flex-row gap-6 lg:gap-8 flex-grow">
+            <nav id="sidebar" class="md:w-1/4 lg:w-1/5 bg-stone-50 p-6 rounded-xl shadow-lg h-fit md:sticky md:top-8">
+                <h2 class="text-xl sm:text-2xl font-semibold mb-6 text-sky-700 border-b pb-3">目次</h2>
+                <ul class="space-y-2 sm:space-y-3">
+                    <li><a href="#" class="block py-2.5 px-4 rounded-lg hover:bg-sky-600 hover:text-white nav-link text-sm sm:text-base" data-section="preface">まえがき</a></li>
+                    <li><a href="#" class="block py-2.5 px-4 rounded-lg hover:bg-sky-600 hover:text-white nav-link text-sm sm:text-base" data-section="q1">第1問：ベクトル</a></li>
+                    <li><a href="#" class="block py-2.5 px-4 rounded-lg hover:bg-sky-600 hover:text-white nav-link text-sm sm:text-base" data-section="q2">第2問：座標変換</a></li>
+                    <li><a href="#" class="block py-2.5 px-4 rounded-lg hover:bg-sky-600 hover:text-white nav-link text-sm sm:text-base" data-section="q3">第3問：質点の運動</a></li>
+                    <li><a href="#" class="block py-2.5 px-4 rounded-lg hover:bg-sky-600 hover:text-white nav-link text-sm sm:text-base" data-section="q4">第4問：線形常微分方程式</a></li>
+                    <li><a href="#" class="block py-2.5 px-4 rounded-lg hover:bg-sky-600 hover:text-white nav-link text-sm sm:text-base" data-section="q5">第5問：1階常微分方程式</a></li>
+                    <li><a href="#" class="block py-2.5 px-4 rounded-lg hover:bg-sky-600 hover:text-white nav-link text-sm sm:text-base" data-section="summary">総括</a></li>
+                </ul>
+            </nav>
+
+            <main id="main-content" class="md:w-3/4 lg:w-4/5 bg-white p-6 sm:p-8 lg:p-10 rounded-xl shadow-xl overflow-x-hidden">
+                <p class="text-lg text-stone-700">左のメニューから項目を選択してください。</p>
+            </main>
+        </div>
+
+        <footer class="mt-12 pt-8 border-t border-stone-300 text-center text-stone-600 text-sm">
+            <p>&copy; 2025 力学演習インタラクティブ解説. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const sectionsData = {
+            preface: {
+                title: 'まえがき',
+                content: `<h2>まえがき</h2>
+                <p>本報告書は、「力学演習問題 その1」 [1] に記載された各問題に対する詳細な解答と解説を提供するものです。扱われる内容は、ベクトル解析の基礎、座標変換とそれを用いた質点の運動の記述、様々な種類の質点の運動、そして物理現象の記述に不可欠な常微分方程式の解法に及びます。これらのトピックは、古典力学を理解し、より高度な物理学の分野へ進むための基礎を形成します。</p>
+                <p>物理学における問題解決は、単に数式を操作することに留まらず、物理的状況を的確に把握し、適切な数学的モデルを構築し、そしてそのモデルから意味のある結論を導き出すプロセスです。本解説では、個々の問題の解法を示すだけでなく、その背景にある物理法則や数学的構造、そして異なる概念間のつながりにも焦点を当てます。特に、「手を動かして計算して下さい」[1] との指示にもあるように、計算過程を丁寧に追うことで、物理への理解を深めることを目指します。</p>`
+            },
+            q1: {
+                title: '第1問：ベクトル',
+                content: `<h2>第1問：ベクトル [1]</h2>
+                <h3>1.1 ベクトル恒等式の証明</h3>
+                <h4>スカラー三重積: $a\\cdot(b\\times c)=b\\cdot(c\\times a)=c\\cdot(a\\times b)$</h4>
+                <p>スカラー三重積は、3つのベクトル $a=(a_x, a_y, a_z)$, $b=(b_x, b_y, b_z)$, $c=(c_x, c_y, c_z)$ によって作られる平行六面体の符号付き体積を表します。この恒等式は、体積がベクトルの選び方（どのベクトルを底面の辺とし、どのベクトルを高さとするか）の循環的な入れ替えに対して不変であることを示しています。</p>
+                <p><strong>証明:</strong><br>成分計算により証明します。まず、$b \\times c$ を計算します。
+                <div class="mathjax-block">$$b \\times c = (b_y c_z - b_z c_y, b_z c_x - b_x c_z, b_x c_y - b_y c_x)$$</div>
+                次に、$a \\cdot (b \\times c)$ を計算します。
+                <div class="mathjax-block">$$a \\cdot (b \\times c) = a_x(b_y c_z - b_z c_y) + a_y(b_z c_x - b_x c_z) + a_z(b_x c_y - b_y c_x)$$</div>
+                これは行列式で次のように書けます。
+                <div class="mathjax-block">$$ a \\cdot (b \\times c) = \\begin{vmatrix} a_x & a_y & a_z \\\\ b_x & b_y & b_z \\\\ c_x & c_y & c_z \\end{vmatrix} $$</div>
+                行列式の性質から、行を巡回置換しても値は変わりません。
+                <div class="mathjax-block">$$ \\begin{vmatrix} a_x & a_y & a_z \\\\ b_x & b_y & b_z \\\\ c_x & c_y & c_z \\end{vmatrix} = \\begin{vmatrix} b_x & b_y & b_z \\\\ c_x & c_y & c_z \\\\ a_x & a_y & a_z \\end{vmatrix} = b \\cdot (c \\times a) $$</div>
+                同様に、
+                <div class="mathjax-block">$$ \\begin{vmatrix} b_x & b_y & b_z \\\\ c_x & c_y & c_z \\\\ a_x & a_y & a_z \\end{vmatrix} = \\begin{vmatrix} c_x & c_y & c_z \\\\ a_x & a_y & a_z \\\\ b_x & b_y & b_z \\end{vmatrix} = c \\cdot (a \\times b) $$</div>
+                したがって、$a\\cdot(b\\times c)=b\\cdot(c\\times a)=c\\cdot(a\\times b)$ が証明されました。この性質は、ベクトルの内積と外積の定義、および行列式の巡回対称性から自然に導かれます。</p>
+                <h4>ベクトル三重積: $a\\times(b\\times c)=b(a\\cdot c)-c(a\\cdot b)$</h4>
+                <p>ベクトル三重積は、「BAC-CAB則」としても知られ、ベクトル解析における重要な公式の一つです。この公式は、$a \\times (b \\times c)$ というベクトルが、$b$ と $c$ の張る平面内に存在することを示しています。</p>
+                <p><strong>証明:</strong><br>成分計算により証明します。ベクトル $a=(a_x, a_y, a_z)$, $b=(b_x, b_y, b_z)$, $c=(c_x, c_y, c_z)$ とします。
+                まず、$b \\times c = (b_y c_z - b_z c_y, b_z c_x - b_x c_z, b_x c_y - b_y c_x)$ です。
+                次に、$a \\times (b \\times c)$ のx成分を計算します。
+                <div class="mathjax-block">$$ \\begin{align*} [a \\times (b \\times c)]_x &= a_y (b_x c_y - b_y c_x) - a_z (b_z c_x - b_x c_z) \\\\ &= a_y b_x c_y - a_y b_y c_x - a_z b_z c_x + a_z b_x c_z \\end{align*} $$</div>
+                一方、右辺 $b(a\\cdot c)-c(a\\cdot b)$ のx成分を計算します。
+                $a \\cdot c = a_x c_x + a_y c_y + a_z c_z$
+                $a \\cdot b = a_x b_x + a_y b_y + a_z b_z$
+                <div class="mathjax-block">$$ \\begin{align*} [b(a\\cdot c)-c(a\\cdot b)]_x &= b_x(a_x c_x + a_y c_y + a_z c_z) - c_x(a_x b_x + a_y b_y + a_z b_z) \\\\ &= b_x a_x c_x + b_x a_y c_y + b_x a_z c_z - c_x a_x b_x - c_x a_y b_y - c_x a_z b_z \\end{align*} $$</div>
+                ここで、$[a \\times (b \\times c)]_x$ の式に $b_x a_x c_x - b_x a_x c_x$ を加減算して整理すると、
+                <div class="mathjax-block">$$ \\begin{align*} [a \\times (b \\times c)]_x &= a_y b_x c_y - a_y b_y c_x - a_z b_z c_x + a_z b_x c_z + (b_x a_x c_x - b_x a_x c_x) \\\\ &= b_x(a_x c_x + a_y c_y + a_z c_z) - c_x(a_x b_x + a_y b_y + a_z b_z) \\\\ &= [b(a\\cdot c)-c(a\\cdot b)]_x \\end{align*} $$</div>
+                y成分、z成分についても同様に計算することで、両辺が一致することが示されます。この恒等式は、複雑なベクトル積の式を、より扱いやすい内積とベクトルのスカラー倍の形に変形する際に役立ちます。例えば、電磁気学におけるローレンツ力の解析や、角運動量の時間発展を記述する際に現れます。</p>
+                <h4>$\\nabla\\times(\\nabla U(r))=0$ の証明</h4>
+                <p>この恒等式は、任意のスカラー関数 $U(r)$ の勾配 (gradient) の回転 (curl) が常にゼロベクトルになることを示しています。物理学においては、保存力の場がスカラーポテンシャルの勾配として表されるため ($\\boldsymbol{F} = -\\nabla U$)、この恒等式は保存力場が渦なし (irrotational) であること、すなわち $\\nabla \\times \\boldsymbol{F} = 0$ であることを意味します。</p>
+                <p><strong>証明:</strong><br>$\\nabla = (\\frac{\\partial}{\\partial x}, \\frac{\\partial}{\\partial y}, \\frac{\\partial}{\\partial z})$ とし、$U(r) = U(x,y,z)$ とします。
+                まず、$\\nabla U$ を計算します。
+                <div class="mathjax-block">$$ \\nabla U = \\left(\\frac{\\partial U}{\\partial x}, \\frac{\\partial U}{\\partial y}, \\frac{\\partial U}{\\partial z}\\right) $$</div>
+                次に、$\\nabla \\times (\\nabla U)$ を計算します。
+                <div class="mathjax-block">$$ \\nabla \\times (\\nabla U) = \\begin{vmatrix} \\boldsymbol{i} & \\boldsymbol{j} & \\boldsymbol{k} \\\\ \\frac{\\partial}{\\partial x} & \\frac{\\partial}{\\partial y} & \\frac{\\partial}{\\partial z} \\\\ \\frac{\\partial U}{\\partial x} & \\frac{\\partial U}{\\partial y} & \\frac{\\partial U}{\\partial z} \\end{vmatrix} $$</div>
+                x成分は、
+                <div class="mathjax-block">$$ \\left[\\nabla \\times (\\nabla U)\\right]_x = \\frac{\\partial}{\\partial y}\\left(\\frac{\\partial U}{\\partial z}\\right) - \\frac{\\partial}{\\partial z}\\left(\\frac{\\partial U}{\\partial y}\\right) = \\frac{\\partial^2 U}{\\partial y \\partial z} - \\frac{\\partial^2 U}{\\partial z \\partial y} $$</div>
+                スカラー関数 $U$ が連続で、2階までの偏導関数が連続であるならば、偏微分の順序は交換可能です ($\\frac{\\partial^2 U}{\\partial y \\partial z} = \\frac{\\partial^2 U}{\\partial z \\partial y}$)。
+                したがって、x成分はゼロになります。
+                <div class="mathjax-block">$$\\left[\\nabla \\times (\\nabla U)\\right]_x = 0$$</div>
+                同様に、y成分とz成分も計算すると、
+                <div class="mathjax-block">$$ \\left[\\nabla \\times (\\nabla U)\\right]_y = \\frac{\\partial}{\\partial z}\\left(\\frac{\\partial U}{\\partial x}\\right) - \\frac{\\partial}{\\partial x}\\left(\\frac{\\partial U}{\\partial z}\\right) = \\frac{\\partial^2 U}{\\partial z \\partial x} - \\frac{\\partial^2 U}{\\partial x \\partial z} = 0 $$</div>
+                <div class="mathjax-block">$$ \\left[\\nabla \\times (\\nabla U)\\right]_z = \\frac{\\partial}{\\partial x}\\left(\\frac{\\partial U}{\\partial y}\\right) - \\frac{\\partial}{\\partial y}\\left(\\frac{\\partial U}{\\partial x}\\right) = \\frac{\\partial^2 U}{\\partial x \\partial y} - \\frac{\\partial^2 U}{\\partial y \\partial x} = 0 $$</div>
+                よって、$\\nabla\\times(\\nabla U(r))=0$ が証明されました。この結果は、ストークスの定理と関連して、保存力のする仕事が経路に依存しないという重要な物理的帰結に繋がります。</p>
+                <h3>1.2 3次元空間における「相反的」ベクトル [1]</h3>
+                <p>問題は、3次元空間内で線形独立な3つのベクトル $a,b,c$ があるとき、$A\\perp b,c, B\\perp a,c, C\\perp a,b$ かつ $|A|=|a|^{-1},|B|=|b|^{-1},|C|=|c|^{-1}$ をみたすような $A,B,C$ を $a,b,c$ のみを使って書き下すことを要求しています [1]。</p>
+                <p>ベクトル $A$ は $b$ と $c$ の両方に垂直であるため、$A$ は外積 $b \\times c$ に平行です。したがって、$A = k_A (b \\times c)$ と書けます。ここで $k_A$ はスカラー係数です。
+                同様に、$B = k_B (c \\times a)$、$C = k_C (a \\times b)$ と書けます。</p>
+                <p>次に、大きさの条件を適用します。
+                $|A| = |k_A (b \\times c)| = |k_A| |b \\times c|$
+                問題の条件から $|A| = |a|^{-1}$ なので、
+                $|k_A| |b \\times c| = |a|^{-1}$
+                よって、$|k_A| = \\frac{1}{|a||b \\times c|}$ となります。
+                したがって、$A$ は次のように書けます。
+                <div class="mathjax-block">$$A = \\pm \\frac{b \\times c}{|a||b \\times c|}$$</div>
+                $a,b,c$ は線形独立なので、$b \\times c \\neq 0$ です。また、$|a| \\neq 0$ です。
+                符号の任意性がありますが、問題文に特に指定はないため、ここでは両方の可能性を残します。物理的な文脈（例えば右手系を保存するなど）によっては一方が選ばれることがあります。</p>
+                <p>同様の手順で $B$ と $C$ も求められます。
+                $|B| = |k_B (c \\times a)| = |k_B| |c \\times a|$
+                $|B| = |b|^{-1}$ より、$|k_B| = \\frac{1}{|b||c \\times a|}$
+                <div class="mathjax-block">$$B = \\pm \\frac{c \\times a}{|b||c \\times a|}$$</div>
+                $|C| = |k_C (a \\times b)| = |k_C| |a \\times b|$
+                $|C| = |c|^{-1}$ より、$|k_C| = \\frac{1}{|c||a \\times b|}$
+                <div class="mathjax-block">$$C = \\pm \\frac{a \\times b}{|c||a \\times b|}$$</div></p>
+                <p>ここで定義されるベクトル $A,B,C$ は、結晶学などで用いられる標準的な相反格子ベクトル（例えば $A^* = \\frac{b \\times c}{a \\cdot (b \\times c)}$ であり、$A^* \\cdot a = 1$ を満たす）とは定義が異なる点に注意が必要です。この問題では、直交性とベクトルの「大きさの逆数」という条件が直接与えられています [1]。この定義は、あるベクトル $a$ の大きさを参照しつつ、他の二つのベクトル $b,c$ が張る面に垂直な方向を持つベクトルを構成するという、特定の幾何学的操作を示唆しています。</p>
+                <h3>1.3 2次元平面における相反基底ベクトル [1]</h3>
+                <p>問題は、2次元面内で線形独立な2つのベクトル $a,b$ について、(2) と同様に $A,B$ を使って書き下すことを要求しています。ヒントとして「(2)の答えと問1をつかうとよい」とあり、さらに「(参考)」として「$r=r_{1}a+r_{2}b$ とあらわしたとき、$A,B$ で張られる2次元面内のベクトル $k=k_{1}A+k_{2}B$ に対して、$r\\cdot k=r_{1}k_{1}+r_{2}k_{2}$ のように書くことができる」とあります [1]。</p>
+                <p>この「(参考)」の記述は、ベクトル $A,B$ がベクトル $a,b$ の双対基底（または相反基底）を形成することを示唆しています。すなわち、以下の条件を満たす $A,B$ を求めることになります [1]。
+                <ol>
+                    <li>$A \\cdot a = 1$</li>
+                    <li>$A \\cdot b = 0$</li>
+                    <li>$B \\cdot a = 0$</li>
+                    <li>$B \\cdot b = 1$</li>
+                </ol>
+                問1(2)の3次元の場合では $|A|=|a|^{-1}$ のような大きさの条件がありましたが、この2次元の問題では「(参考)」の記述が優先されると解釈し、双対基底の定義を用います。この解釈の変更は、「同様に」という言葉が、直交性を利用する点やベクトルで表現する点を指していると考えることで整合性が取れます。</p>
+                <p>$a=(a_x, a_y)$、$b=(b_x, b_y)$ とし、$A=(A_x, A_y)$ とします。</p>
+                <p><strong>ベクトル $A$ の導出:</strong><br>
+                条件 $A \\cdot b = 0$ より、$A$ はベクトル $b$ に直交します。2次元平面において、$b=(b_x, b_y)$ に直交するベクトルは $k(-b_y, b_x)$ の形（$k$ はスカラー）で書けます。これは、$b$ を反時計回りに90度回転させたベクトルに平行です。
+                よって、$A = k_A (-b_y, b_x)$ と置きます。
+                次に、条件 $A \\cdot a = 1$ を用います。
+                $A \\cdot a = k_A (-b_y, b_x) \\cdot (a_x, a_y) = k_A (-b_y a_x + b_x a_y) = k_A (a_y b_x - a_x b_y) = 1$
+                $a,b$ は線形独立なので、$a_y b_x - a_x b_y \\neq 0$ です。この量は、$a$ と $b$ が張る平行四辺形の符号付き面積に相当します。
+                したがって、$k_A = \\frac{1}{a_y b_x - a_x b_y}$
+                よって、$A$ は次のように書けます。
+                <div class="mathjax-block">$$A = \\frac{1}{a_y b_x - a_x b_y} (-b_y, b_x)$$</div></p>
+                <p><strong>ベクトル $B$ の導出:</strong><br>
+                同様に、$B=(B_x, B_y)$ とします。
+                条件 $B \\cdot a = 0$ より、$B$ はベクトル $a$ に直交します。よって、$B = k_B (-a_y, a_x)$ と置きます。
+                次に、条件 $B \\cdot b = 1$ を用います。
+                $B \\cdot b = k_B (-a_y, a_x) \\cdot (b_x, b_y) = k_B (-a_y b_x + a_x b_y) = k_B (a_x b_y - a_y b_x) = 1$
+                したがって、$k_B = \\frac{1}{a_x b_y - a_y b_x} = \\frac{-1}{a_y b_x - a_x b_y}$
+                よって、$B$ は次のように書けます。
+                <div class="mathjax-block">$$B = \\frac{1}{a_x b_y - a_y b_x} (-a_y, a_x) = \\frac{1}{a_y b_x - a_x b_y} (a_y, -a_x)$$</div></p>
+                <p>まとめると、
+                <div class="mathjax-block">$$A = \\frac{1}{a_y b_x - a_x b_y} \\begin{pmatrix} -b_y \\\\ b_x \\end{pmatrix}$$</div>
+                <div class="mathjax-block">$$B = \\frac{1}{a_y b_x - a_x b_y} \\begin{pmatrix} a_y \\\\ -a_x \\end{pmatrix}$$</div>
+                ここで、分母の $a_y b_x - a_x b_y$ は、行列 $\\begin{pmatrix} a_x & b_x \\\\ a_y & b_y \\end{pmatrix}$ の行列式 $\\det(a,b)$ の転置行列の行列式、あるいはベクトル $a$ と $b$ を3次元ベクトル $(a_x, a_y, 0)$ と $(b_x, b_y, 0)$ とみなしたときの外積 $(a \\times b)_z$ 成分です。</p>
+                <p>双対基底の概念は、非直交座標系でベクトルの成分を抽出したり、テンソル解析、結晶学（逆格子ベクトル）、信号処理など、物理学や工学の広範な分野で応用される基本的な道具立てです。この問題は、その最も基礎的な2次元の例を提供しています。</p>`
+            },
+            q2: {
+                title: '第2問：座標変換',
+                content: `<h2>第2問：座標変換 [1]</h2>
+                <h3>2.1 極座標における速度と加速度</h3>
+                <p>2次元xy平面における質点の位置を極座標 $(r, \\theta)$ で表したとき、速度 $v = dr/dt$ と加速度 $a = d^2r/dt^2$ の表現を導出します [1]。<br>
+                位置ベクトル $r$ は、$r$ 方向の単位ベクトル $e_r$ を用いて $r = r e_r$ と書けます。
+                また、$\\theta$ 方向の単位ベクトルを $e_\\theta$ とします。これらの基底ベクトルは、質点の位置によって向きが変わり、質点が運動すれば時間とも共に変化します。
+                $e_r = (\\cos\\theta, \\sin\\theta)$ <br>
+                $e_\\theta = (-\\sin\\theta, \\cos\\theta)$</p>
+                <p>基底ベクトルの時間微分は、$\\theta$ が時間変化することから生じます。
+                <div class="mathjax-block">$$ \\dot{e_r} = \\frac{d e_r}{dt} = \\frac{d e_r}{d\\theta} \\frac{d\\theta}{dt} = (-\\sin\\theta, \\cos\\theta)\\dot{\\theta} = \\dot{\\theta} e_\\theta $$</div>
+                <div class="mathjax-block">$$ \\dot{e_\\theta} = \\frac{d e_\\theta}{dt} = \\frac{d e_\\theta}{d\\theta} \\frac{d\\theta}{dt} = (-\\cos\\theta, -\\sin\\theta)\\dot{\\theta} = -\\dot{\\theta} e_r $$</div></p>
+                <p><strong>速度 $v$ の導出:</strong><br>
+                $v = \\frac{dr}{dt} = \\frac{d}{dt}(r e_r) = \\dot{r} e_r + r \\dot{e_r}$ <br>
+                $\\dot{e_r} = \\dot{\\theta} e_\\theta$ を代入すると、
+                <div class="mathjax-block">$$v = \\dot{r}e_{r}+r\\dot{\\theta}e_{\\theta}$$</div>
+                これは、速度の動径成分が $\\dot{r}$、接線成分が $r\\dot{\\theta}$ であることを示しています。</p>
+                <p><strong>加速度 $a$ の導出:</strong><br>
+                $a = \\frac{dv}{dt} = \\frac{d}{dt}(\\dot{r} e_r + r\\dot{\\theta} e_\\theta)$ <br>
+                積の微分法則を適用します。
+                <div class="mathjax-block">$$ \\begin{align*} a &= (\\ddot{r} e_r + \\dot{r} \\dot{e_r}) + (\\dot{r}\\dot{\\theta} e_\\theta + r\\ddot{\\theta} e_\\theta + r\\dot{\\theta} \\dot{e_\\theta}) \\\\ &= \\ddot{r} e_r + \\dot{r} (\\dot{\\theta} e_\\theta) + \\dot{r}\\dot{\\theta} e_\\theta + r\\ddot{\\theta} e_\\theta + r\\dot{\\theta} (-\\dot{\\theta} e_r) \\\\ &= \\ddot{r} e_r + \\dot{r}\\dot{\\theta} e_\\theta + \\dot{r}\\dot{\\theta} e_\\theta + r\\ddot{\\theta} e_\\theta - r\\dot{\\theta}^2 e_r \\\\ &= (\\ddot{r} - r\\dot{\\theta}^2)e_r + (2\\dot{r}\\dot{\\theta} + r\\ddot{\\theta})e_\\theta \\end{align*} $$</div>
+                ここで、$e_\\theta$ 成分の $(2\\dot{r}\\dot{\\theta} + r\\ddot{\\theta})$ は、次のように変形できます。
+                $\\frac{d}{dt}(r^2\\dot{\\theta}) = 2r\\dot{r}\\dot{\\theta} + r^2\\ddot{\\theta} = r(2\\dot{r}\\dot{\\theta} + r\\ddot{\\theta})$ <br>
+                よって、$2\\dot{r}\\dot{\\theta} + r\\ddot{\\theta} = \\frac{1}{r}\\frac{d}{dt}(r^2\\dot{\\theta})$ <br>
+                したがって、加速度は次のように書けます。
+                <div class="mathjax-block">$$a = (\\ddot{r}-r\\dot{\\theta}^{2})e_{r}+\\frac{1}{r}\\frac{d}{dt}(r^{2}\\dot{\\theta})e_{\\theta}$$</div>
+                動径方向の加速度成分 $(\\ddot{r}-r\\dot{\\theta}^{2})$ に含まれる $-r\\dot{\\theta}^2$ は向心加速度に関連し、接線方向の加速度成分 $\\frac{1}{r}\\frac{d}{dt}(r^{2}\\dot{\\theta})$ は角運動量の変化と関連しています。特に、$r^2\\dot{\\theta}$ は単位質量あたりの角運動量の大きさに比例します（具体的には $L_z = m r^2 \\dot{\\theta}$）。もし質点に働く力の接線成分 $F_\\theta$ がゼロであれば（中心力の場合など）、$m \\frac{1}{r}\\frac{d}{dt}(r^{2}\\dot{\\theta}) = 0$ となり、$r^2\\dot{\\theta}$ は保存されます。これはケプラーの面積速度一定の法則に繋がります。 <br>
+                また、極座標の基底ベクトル $e_r, e_\\theta$ が質点の運動に伴って時間変化するため、加速度の表式には、回転座標系における見かけの力（遠心力やコリオリ力）に対応する項の萌芽が現れています。例えば、$-r\\dot{\\theta}^2 e_r$ は遠心力に、$(2\\dot{r}\\dot{\\theta})e_\\theta$ はコリオリ力に関連する加速度項です。</p>
+                <h3>2.2 等速円運動と運動方程式</h3>
+                <p>等速円運動は、2.1で導出した極座標表示において、半径 $r$ が一定値 $R$ であり、角速度 $\\dot{\\theta}$ が一定値 $\\omega$ である特別な場合です [1]。<br>
+                このとき、$r=R$ (一定) $\\Rightarrow \\dot{r}=0, \\ddot{r}=0$ <br>
+                $\\dot{\\theta}=\\omega$ (一定) $\\Rightarrow \\ddot{\\theta}=0$</p>
+                <p>これらの条件を2.1の速度と加速度の式に代入します。<br>
+                <strong>速度:</strong>
+                $v = \\dot{r}e_{r}+r\\dot{\\theta}e_{\\theta} = (0)e_r + R\\omega e_\\theta = R\\omega e_\\theta$ <br>
+                速度は接線方向のみを持ち、大きさは $R\\omega$ です。</p>
+                <p><strong>加速度:</strong>
+                $a = (\\ddot{r}-r\\dot{\\theta}^{2})e_{r}+\\frac{1}{r}\\frac{d}{dt}(r^{2}\\dot{\\theta})e_{\\theta}$ <br>
+                $a_r = \\ddot{r}-r\\dot{\\theta}^{2} = 0 - R\\omega^2 = -R\\omega^2$ <br>
+                $a_\\theta = \\frac{1}{r}\\frac{d}{dt}(r^{2}\\dot{\\theta}) = \\frac{1}{R}\\frac{d}{dt}(R^{2}\\omega) = \\frac{1}{R}(0) = 0$ （$R^2\\omega$ は定数なので時間微分は0）<br>
+                よって、$a = -R\\omega^2 e_r$ <br>
+                加速度は動径方向内向き（中心向き）のみを持ち、大きさは $R\\omega^2$ です。これは向心加速度です。</p>
+                <p><strong>極座標での運動方程式:</strong><br>
+                ニュートンの運動方程式 $F=ma$ より、極座標での成分は次のようになります。<br>
+                $F_r = m a_r = -mR\\omega^2$ <br>
+                $F_\\theta = m a_\\theta = 0$ <br>
+                これは、等速円運動を維持するためには、質点に中心向きの力（向心力）$F_r = -mR\\omega^2$ が働き、接線方向の力は $F_\\theta = 0$ である必要があることを示しています。</p>
+                <p><strong>直交座標系での運動方程式:</strong><br>
+                等速円運動を直交座標系 $(x,y)$ で記述すると、時刻 $t=0$ で $x$軸上に質点があるとして、<br>
+                $x(t) = R\\cos(\\omega t)$ <br>
+                $y(t) = R\\sin(\\omega t)$ <br>
+                速度成分は、<br>
+                $\\dot{x}(t) = -R\\omega\\sin(\\omega t)$ <br>
+                $\\dot{y}(t) = R\\omega\\cos(\\omega t)$ <br>
+                加速度成分は、<br>
+                $\\ddot{x}(t) = -R\\omega^2\\cos(\\omega t) = -\\omega^2 x(t)$ <br>
+                $\\ddot{y}(t) = -R\\omega^2\\sin(\\omega t) = -\\omega^2 y(t)$ <br>
+                直交座標系での運動方程式は次のようになります。<br>
+                $F_x = m\\ddot{x} = -m\\omega^2 x$ <br>
+                $F_y = m\\ddot{y} = -m\\omega^2 y$ <br>
+                これは、力のベクトル $F=(F_x, F_y) = -m\\omega^2 (x,y) = -m\\omega^2 r$ であり、常に原点（円の中心）を向く向心力であることを示しています。その大きさは $|F| = \\sqrt{F_x^2 + F_y^2} = \\sqrt{m^2\\omega^4(x^2+y^2)} = m\\omega^2\\sqrt{R^2} = mR\\omega^2$ となり、極座標での結果と一致します。</p>
+                <p>以下の表は、等速円運動の運動方程式を極座標系と直交座標系で比較したものです。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>座標系</th>
+                            <th>動径成分 / x成分 運動方程式</th>
+                            <th>接線成分 / y成分 運動方程式</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>極座標 (Polar)</td>
+                            <td>$F_r = m(\\ddot{r}-r\\dot{\\theta}^{2}) = -mR\\omega^2$</td>
+                            <td>$F_\\theta = m\\frac{1}{r}\\frac{d}{dt}(r^{2}\\dot{\\theta}) = 0$</td>
+                        </tr>
+                        <tr>
+                            <td>直交座標 (Cartesian)</td>
+                            <td>$F_x = m\\ddot{x} = -m\\omega^2 x$</td>
+                            <td>$F_y = m\\ddot{y} = -m\\omega^2 y$</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>この比較から、同じ物理現象（等速円運動）が異なる座標系でどのように表現されるかがわかります。極座標では向心力が動径成分 $F_r$ として直接的に現れるのに対し、直交座標では $x,y$ 各成分の力の形で現れます。問題の対称性（この場合は円対称性）に適した座標系を選ぶことで、物理的状況の記述や計算がしばしば簡略化されます。</p>`
+            },
+            q3: {
+                title: '第3問：質点の運動',
+                content: `<h2>第3問：質点の運動 [1]</h2>
+                <p>質点の位置 $r(t)$ が時間 $t$ の関数として与えられた場合の速度 $v(t) = dr/dt$ を求めます。</p>
+                <h3>3.1 $r(t)=c_{n}(\\frac{t}{\\tau})^{n}$ の場合の速度</h3>
+                <p>位置 $r(t)=c_{n}\\left(\\frac{t}{\\tau}\\right)^{n}$ [1] で与えられる質点の速度 $v(t)$ を求めます。
+                $c_n$ と $\\tau$ は定数です。
+                <div class="mathjax-block">$$v(t) = \\frac{dr}{dt} = \\frac{d}{dt} \\left( c_n \\frac{t^n}{\\tau^n} \\right)$$</div>
+                $\\frac{c_n}{\\tau^n}$ は定数なので、
+                <div class="mathjax-block">$$v(t) = \\frac{c_n}{\\tau^n} \\frac{d}{dt}(t^n) = \\frac{c_n}{\\tau^n} (n t^{n-1})$$</div>
+                これを整理すると、
+                <div class="mathjax-block">$$v(t) = \\frac{n c_n}{\\tau} \\left(\\frac{t}{\\tau}\\right)^{n-1}$$</div>
+                この形式の運動はべき乗則に従っており、$n$ の値によって様々な運動を表現できます。
+                例えば、<br>
+                $n=0$ のとき: $r(t) = c_0$ (静止)、$v(t)=0$<br>
+                $n=1$ のとき: $r(t) = c_1 (t/\\tau)$ (等速運動)、$v(t) = c_1/\\tau$ (一定)<br>
+                $n=2$ のとき: $r(t) = c_2 (t/\\tau)^2$ (等加速度運動に対応)、$v(t) = (2c_2/\\tau)(t/\\tau)$ (時間に比例して増加)</p>
+                <h3>3.2 $r(t)=e^{-t/\\tau}$ の場合の速度とTaylor展開</h3>
+                <p><strong>(2) $r(t)=e^{-t/\\tau}$ の場合の速度</strong> [1]<br>
+                位置 $r(t)=e^{-t/\\tau}$ で与えられる質点の速度 $v(t)$ を求めます。
+                <div class="mathjax-block">$$ v(t) = \\frac{dr}{dt} = \\frac{d}{dt} (e^{-t/\\tau}) = e^{-t/\\tau} \\cdot \\left(-\\frac{1}{\\tau}\\right) = -\\frac{1}{\\tau}e^{-t/\\tau} $$</div>
+                この運動は指数関数的な減衰を示しており、速度もまた同じ指数関数に従って減衰します。</p>
+                <p><strong>(3) Taylor 展開</strong> [1]<br>
+                $e^{-t/\\tau}$ を $t=0$ のまわりでTaylor展開（Maclaurin展開）し、$\\sum_{n=0}^{\\infty}c_{n}t^{n}$ の形で表し、$c_n$ を求めます。
+                指数関数 $e^x$ のMaclaurin展開は $e^x = \\sum_{n=0}^{\\infty} \\frac{x^n}{n!}$ です。
+                ここで $x = -t/\\tau$ とおくと、
+                <div class="mathjax-block">$$ e^{-t/\\tau} = \\sum_{n=0}^{\\infty} \\frac{1}{n!} \\left(-\\frac{t}{\\tau}\\right)^n = \\sum_{n=0}^{\\infty} \\frac{(-1)^n}{n!\\tau^n} t^n $$</div>
+                問題文の $\\sum_{n=0}^{\\infty}c_{n}t^{n}$ と比較すると、係数 $c_n$ は次のように求められます。
+                <div class="mathjax-block">$$ c_n = \\frac{(-1)^n}{n!\\tau^n} $$</div>
+                この結果は、指数関数的な運動(2)が、無限個のべき乗則の運動(1)の重ね合わせとして表現できることを示しています。つまり、$r(t)=e^{-t/\\tau}$ という運動は、$r(t) = c_0 + c_1 t + c_2 t^2 + \\dots$ のように、各項が $t^n$ に比例する運動の和として理解できます。ここで $c_n$ が上記のように具体的に定まることで、運動(1)の係数 $c_n$ (問題文の $c_n(\\frac{t}{\\tau})^n$ の $c_n$ とは異なる定義であることに注意。ここでは $e^{-t/\\tau} = \\sum (\\text{係数})_n t^n$ の $(\\text{係数})_n$ を $c_n$ としている) が、特定の関数形からどのように決定されるかの一例を示しています。Taylor展開は、複雑な関数をより単純な多項式の和として近似・表現するための強力な手段であり、物理現象の短時間での振る舞いを解析する際などに有効です。</p>
+                <h3>3.3 $r(t)=e^{i\\phi t}$ の場合の速度</h3>
+                <p>問題文ではこの問題番号も(3)とされています [1]。<br>
+                位置 $r(t)=e^{i\\phi t}$ で与えられる質点の速度 $v(t)$ を求めます。$\\phi$ は定数です。
+                <div class="mathjax-block">$$v(t) = \\frac{dr}{dt} = \\frac{d}{dt} (e^{i\\phi t}) = e^{i\\phi t} \\cdot (i\\phi) = i\\phi e^{i\\phi t}$$</div>
+                速度は $i\\phi \\, r(t)$ となります。複素指数関数は振動や波動現象の記述に非常に便利です。速度が元の関数の $i\\phi$ 倍となることは、複素平面上で考えると、元のベクトル $r(t)$ を位相で $\\pi/2$ (因子 $i$ による) だけ進め、大きさを $\\phi$ 倍したベクトルが $v(t)$ であることを意味します。これはフェーザ表示でよく用いられる考え方です。</p>
+                <h3>3.4 Eulerの公式と等速円運動への関連</h3>
+                <p>問題文ではこの問題番号は(4)とされています [1]。<br>
+                Eulerの公式 $e^{iX} = \\cos X + i\\sin X$ を用いて、3.3の $r(t)=e^{i\\phi t}$ を $\\sin, \\cos$ を使って書き下し、その実部と虚部を $x(t), y(t)$ と見なすことで、この運動が問2(2)で扱った等速円運動と同様の振る舞いをすることを確かめます。</p>
+                <p>$r(t) = e^{i\\phi t}$ にEulerの公式を適用すると ($X = \\phi t$)、
+                <div class="mathjax-block">$$r(t) = \\cos(\\phi t) + i\\sin(\\phi t)$$</div>
+                この複素数を $r(t) = x(t) + iy(t)$ と見なすと、実部と虚部はそれぞれ、<br>
+                $x(t) = \\cos(\\phi t)$ <br>
+                $y(t) = \\sin(\\phi t)$ <br>
+                となります。<br>
+                これは、半径 $R=1$、角速度 $\\omega=\\phi$ の等速円運動を直交座標で表した式 $(x(t)=R\\cos(\\omega t), y(t)=R\\sin(\\omega t))$ と一致します。<br>
+                したがって、$r(t)=e^{i\\phi t}$ で表される運動は、複素平面上での単位円上の等速円運動に対応します。<br>
+                この問題は、複素指数関数がいかに簡潔に等速円運動を表現できるかを示しており、問2(2)の座標変換と運動の記述、問3(3)の複素関数、そしてEulerの公式という異なる概念を結びつけ、物理現象（等速円運動）の多角的な理解を促します。</p>`
+            },
+            q4: {
+                title: '第4問：線形常微分方程式',
+                content: `<h2>第4問：線形常微分方程式 [1]</h2>
+                <p>このセクションでは、様々な線形常微分方程式の一般解、および初期条件が与えられている場合はそれを満たす特解を求めます。</p>
+                <h3>4.1 2階線形同次ODE (定数係数)</h3>
+                <p>方程式: $(\\frac{d^{2}}{dx^{2}}-5\\frac{d}{dx}-6)y=0$、初期条件: $y(0)=1, \\dot{y}(0)=1$ [1]。<br>
+                これは定数係数の2階線形同次微分方程式です。解を $y=e^{\\lambda x}$ と仮定して特性方程式を立てます。
+                <div class="mathjax-block">$$\\lambda^2 - 5\\lambda - 6 = 0$$</div>
+                この2次方程式を解くと、
+                $(\\lambda - 6)(\\lambda + 1) = 0$ <br>
+                よって、固有値は $\\lambda_1 = 6, \\lambda_2 = -1$ です。<br>
+                これらは実数で異なる2つの解なので、一般解は次の形になります。
+                $y(x) = C_1 e^{6x} + C_2 e^{-x}$ <br>
+                ここで $C_1, C_2$ は任意定数です。</p>
+                <p>次に、初期条件を用いて $C_1, C_2$ を決定します。<br>
+                まず、$y(x)$ の導関数 $\\dot{y}(x)$ を求めます。
+                $\\dot{y}(x) = 6C_1 e^{6x} - C_2 e^{-x}$ <br>
+                初期条件 $y(0)=1$ より、
+                $y(0) = C_1 e^0 + C_2 e^0 = C_1 + C_2 = 1 \\quad \\tag{i}$ <br>
+                初期条件 $\\dot{y}(0)=1$ より、
+                $\\dot{y}(0) = 6C_1 e^0 - C_2 e^0 = 6C_1 - C_2 = 1 \\quad \\tag{ii}$ <br>
+                連立方程式 $(i)$ と $(ii)$ を解きます。<br>
+                $(i) + (ii)$ より、$7C_1 = 2 \\Rightarrow C_1 = 2/7$ <br>
+                $(i)$ に $C_1 = 2/7$ を代入すると、$2/7 + C_2 = 1 \\Rightarrow C_2 = 1 - 2/7 = 5/7$ <br>
+                したがって、初期条件を満たす解は、
+                <div class="mathjax-block">$$y(x) = \\frac{2}{7}e^{6x} + \\frac{5}{7}e^{-x}$$</div>
+                この種の方程式は、物理学において振動現象（特に過減衰の場合）や拡散現象など、多くの場面で現れます。</p>
+                <h3>4.2 2階線形非同次ODE (定数係数)</h3>
+                <p>方程式: $(\\frac{d^{2}}{dx^{2}}-4\\frac{d}{dx})y=4x^{2}+2x$ [1]。<br>
+                これは定数係数の2階線形非同次微分方程式です。一般解は、対応する同次方程式の一般解 $y_h(x)$ と、非同次方程式の特解 $y_p(x)$ の和 $y(x) = y_h(x) + y_p(x)$ で与えられます。</p>
+                <p><strong>1. 同次方程式の一般解 $y_h(x)$:</strong><br>
+                同次方程式は $(\\frac{d^{2}}{dx^{2}}-4\\frac{d}{dx})y=0$ です。特性方程式は、
+                $\\lambda^2 - 4\\lambda = 0 \\Rightarrow \\lambda(\\lambda-4) = 0$ <br>
+                固有値は $\\lambda_1 = 0, \\lambda_2 = 4$ です。<br>
+                よって、$y_h(x) = C_1 e^{0x} + C_2 e^{4x} = C_1 + C_2 e^{4x}$。</p>
+                <p><strong>2. 非同次方程式の特解 $y_p(x)$:</strong><br>
+                非同次項は $4x^2+2x$ という2次の多項式です。未定係数法を用います。<br>
+                通常、非同次項が $n$ 次多項式の場合、特解を $n$ 次多項式と仮定しますが、この問題では同次解の固有値の一つが $\\lambda_1=0$ であり、これは同次解が定数項 ($C_1$) を含むことを意味します。非同次項 $4x^2+2x$ に対応する標準的な試行解 $Ax^2+Bx+C$ のうち、定数項 $C$ が同次解と重複します。このような場合、試行解全体に $x$ を掛けます。<br>
+                よって、特解を $y_p(x) = x(Ax^2+Bx+C) = Ax^3+Bx^2+Cx$ と仮定します。<br>
+                $\\dot{y_p}(x) = 3Ax^2+2Bx+C$ <br>
+                $\\ddot{y_p}(x) = 6Ax+2B$ <br>
+                これらを非同次方程式に代入します。<br>
+                $(6Ax+2B) - 4(3Ax^2+2Bx+C) = 4x^2+2x$ <br>
+                $-12Ax^2 + (6A-8B)x + (2B-4C) = 4x^2+2x$ <br>
+                係数を比較します。<br>
+                $x^2$ の係数: $-12A = 4 \\Rightarrow A = -4/12 = -1/3$ <br>
+                $x$ の係数: $6A-8B = 2 \\Rightarrow 6(-1/3)-8B = 2 \\Rightarrow -2-8B = 2 \\Rightarrow -8B = 4 \\Rightarrow B = -4/8 = -1/2$ <br>
+                定数項: $2B-4C = 0 \\Rightarrow 2(-1/2)-4C = 0 \\Rightarrow -1-4C = 0 \\Rightarrow -4C = 1 \\Rightarrow C = -1/4$ <br>
+                したがって、特解は $y_p(x) = -\\frac{1}{3}x^3 - \\frac{1}{2}x^2 - \\frac{1}{4}x$ です。</p>
+                <p><strong>3. 一般解 $y(x)$:</strong>
+                <div class="mathjax-block">$$y(x) = y_h(x) + y_p(x) = C_1 + C_2 e^{4x} - \\frac{1}{3}x^3 - \\frac{1}{2}x^2 - \\frac{1}{4}x$$</div>
+                非同次方程式の解は、システムの固有の振る舞いを表す同次解と、外部からの強制項に対する応答を表す特解の和で構成されるという構造は、線形システムに共通する重要な特徴です。</p>
+                <h3>4.3 2階線形非同次ODE (定数係数、三角関数と指数関数の積)</h3>
+                <p>方程式: $(\\frac{d^{2}}{dx^{2}}-3\\frac{d}{dx}+2)y=e^{4x}\\sin x$ [1]。</p>
+                <p><strong>1. 同次方程式の一般解 $y_h(x)$:</strong><br>
+                同次方程式は $(\\frac{d^{2}}{dx^{2}}-3\\frac{d}{dx}+2)y=0$ です。特性方程式は、
+                $\\lambda^2 - 3\\lambda + 2 = 0 \\Rightarrow (\\lambda-1)(\\lambda-2) = 0$ <br>
+                固有値は $\\lambda_1 = 1, \\lambda_2 = 2$ です。<br>
+                よって、$y_h(x) = C_1 e^x + C_2 e^{2x}$。</p>
+                <p><strong>2. 非同次方程式の特解 $y_p(x)$:</strong><br>
+                非同次項は $e^{4x}\\sin x$ です。未定係数法を用います。<br>
+                試行解を $y_p(x) = e^{4x}(A\\cos x + B\\sin x)$ と仮定します。<br>
+                $\\dot{y_p}(x) = 4e^{4x}(A\\cos x + B\\sin x) + e^{4x}(-A\\sin x + B\\cos x)$ <br>
+                $= e^{4x}((4A+B)\\cos x + (4B-A)\\sin x)$ <br>
+                $\\ddot{y_p}(x) = 4e^{4x}((4A+B)\\cos x + (4B-A)\\sin x) + e^{4x}(-(4A+B)\\sin x + (4B-A)\\cos x)$ <br>
+                $= e^{4x}((16A+4B+4B-A)\\cos x + (16B-4A-4A-B)\\sin x)$ <br>
+                $= e^{4x}((15A+8B)\\cos x + (-8A+15B)\\sin x)$ <br>
+                これらを非同次方程式 $y'' - 3y' + 2y = e^{4x}\\sin x$ に代入します。$e^{4x}$ は共通なので割ることができます。<br>
+                $((15A+8B)\\cos x + (-8A+15B)\\sin x) - 3((4A+B)\\cos x + (4B-A)\\sin x) + 2(A\\cos x + B\\sin x) = \\sin x$ <br>
+                $\\cos x$ の係数をまとめると: <br>
+                $(15A+8B) - 3(4A+B) + 2A = 15A+8B - 12A-3B + 2A = (15-12+2)A + (8-3)B = 5A+5B$ <br>
+                $\\sin x$ の係数をまとめると: <br>
+                $(-8A+15B) - 3(4B-A) + 2B = -8A+15B - 12B+3A + 2B = (-8+3)A + (15-12+2)B = -5A+5B$ <br>
+                よって、<br>
+                $(5A+5B)\\cos x + (-5A+5B)\\sin x = 0\\cdot\\cos x + 1\\cdot\\sin x$ <br>
+                係数を比較します。<br>
+                $5A+5B = 0 \\Rightarrow A+B=0 \\Rightarrow B=-A$ <br>
+                $-5A+5B = 1$ <br>
+                $B=-A$ を代入すると、$-5A+5(-A) = 1 \\Rightarrow -10A = 1 \\Rightarrow A = -1/10$ <br>
+                よって、$B = -A = 1/10$ <br>
+                したがって、特解は $y_p(x) = e^{4x}(-\\frac{1}{10}\\cos x + \\frac{1}{10}\\sin x)$ です。</p>
+                <p>別法として、非同次項を $e^{4x}\\sin x = \\text{Im}(e^{4x}e^{ix}) = \\text{Im}(e^{(4+i)x})$ と考え、複素方程式 $Y'' - 3Y' + 2Y = e^{(4+i)x}$ の特解 $Y_p$ を求め、その虚部を取る方法もあります。<br>
+                $Y_p = C e^{(4+i)x}$ と仮定すると、$Y_p' = (4+i)C e^{(4+i)x}$, $Y_p'' = (4+i)^2 C e^{(4+i)x} = (16+8i-1)C e^{(4+i)x} = (15+8i)C e^{(4+i)x}$。<br>
+                代入して $e^{(4+i)x}$ で割ると、<br>
+                $C((15+8i) - 3(4+i) + 2) = 1$ <br>
+                $C(15+8i - 12-3i + 2) = 1$ <br>
+                $C(5+5i) = 1 \\Rightarrow C = \\frac{1}{5(1+i)} = \\frac{1-i}{5(1+i)(1-i)} = \\frac{1-i}{5(1-i^2)} = \\frac{1-i}{10}$ <br>
+                $Y_p(x) = \\frac{1-i}{10} e^{(4+i)x} = \\frac{1-i}{10} e^{4x}(\\cos x + i\\sin x)$ <br>
+                $= \\frac{e^{4x}}{10} (\\cos x + i\\sin x - i\\cos x - i^2\\sin x)$ <br>
+                $= \\frac{e^{4x}}{10} ((\\cos x + \\sin x) + i(\\sin x - \\cos x))$ <br>
+                $y_p(x) = \\text{Im}(Y_p(x)) = \\frac{e^{4x}}{10}(\\sin x - \\cos x)$。これは上記の結果と一致します。</p>
+                <p><strong>3. 一般解 $y(x)$:</strong>
+                <div class="mathjax-block">$$y(x) = y_h(x) + y_p(x) = C_1 e^x + C_2 e^{2x} + \\frac{1}{10}e^{4x}(\\sin x - \\cos x)$$</div>
+                このような形の非同次項は、減衰振動系における強制振動の解析などで現れます。</p>
+                <h3>4.4 3階線形非同次ODE (定数係数)</h3>
+                <p>PDFではこの問題は(4)と番号付けされていませんが、(3)と(5)の間に記載されています [1]。<br>
+                方程式: $(\\frac{d^{3}}{dx^{3}}+\\frac{d}{dx})y=e^{x}+2x-1$。</p>
+                <p><strong>1. 同次方程式の一般解 $y_h(x)$:</strong><br>
+                同次方程式は $(\\frac{d^{3}}{dx^{3}}+\\frac{d}{dx})y=0$ です。特性方程式は、
+                $\\lambda^3 + \\lambda = 0 \\Rightarrow \\lambda(\\lambda^2+1) = 0$ <br>
+                固有値は $\\lambda_1 = 0, \\lambda_2 = i, \\lambda_3 = -i$ です。<br>
+                よって、$y_h(x) = C_1 e^{0x} + C_2 \\cos x + C_3 \\sin x = C_1 + C_2 \\cos x + C_3 \\sin x$。</p>
+                <p><strong>2. 非同次方程式の特解 $y_p(x)$:</strong><br>
+                非同次項は $e^x + (2x-1)$ です。重ね合わせの原理により、$e^x$ に対する特解 $y_{p1}(x)$ と $2x-1$ に対する特解 $y_{p2}(x)$ を別々に求めます。<br>
+                $y_p(x) = y_{p1}(x) + y_{p2}(x)$。</p>
+                <p><em>$e^x$ に対する特解 $y_{p1}(x)$:</em><br>
+                試行解を $y_{p1}(x) = Ae^x$ と仮定します。<br>
+                $\\dot{y}_{p1} = Ae^x, \\ddot{y}_{p1} = Ae^x, \\dddot{y}_{p1} = Ae^x$ <br>
+                代入すると、$Ae^x + Ae^x = e^x \\Rightarrow 2Ae^x = e^x \\Rightarrow 2A=1 \\Rightarrow A=1/2$ <br>
+                よって、$y_{p1}(x) = \\frac{1}{2}e^x$。</p>
+                <p><em>$2x-1$ に対する特解 $y_{p2}(x)$:</em><br>
+                非同次項は1次多項式です。同次解に定数項 $C_1$ (固有値 $\\lambda=0$ に対応) が含まれるため、試行解を $x(Bx+C) = Bx^2+Cx$ と仮定します。<br>
+                $\\dot{y}_{p2} = 2Bx+C$ <br>
+                $\\ddot{y}_{p2} = 2B$ <br>
+                $\\dddot{y}_{p2} = 0$ <br>
+                代入すると、$0 + (2Bx+C) = 2x-1$ <br>
+                係数を比較します。<br>
+                $x$ の係数: $2B = 2 \\Rightarrow B=1$ <br>
+                定数項: $C = -1$ <br>
+                よって、$y_{p2}(x) = x^2 - x$。</p>
+                <p>したがって、特解は $y_p(x) = \\frac{1}{2}e^x + x^2 - x$ です。</p>
+                <p><strong>3. 一般解 $y(x)$:</strong>
+                <div class="mathjax-block">$$y(x) = y_h(x) + y_p(x) = C_1 + C_2 \\cos x + C_3 \\sin x + \\frac{1}{2}e^x + x^2 - x$$</div>
+                高階の微分方程式も、特性方程式、未定係数法、重ね合わせの原理といった同様の考え方で解くことができます。同次解の根と非同次項の形に応じて特解の仮定を適切に調整することが重要です。</p>
+                <h3>4.5 連立1階線形微分方程式</h3>
+                <p>方程式系: $\\begin{cases}\\frac{dy_{1}}{dx}+\\frac{dy_{2}}{dx}+2y_{1}+y_{2}=0 & \\cdots(A)\\\\ \\frac{dy_{2}}{dx}+5y_{1}+3y_{2}=0 & \\cdots(B)\\end{cases}$ <br>
+                初期条件: $(y_{1}(0),y_{2}(0))=(1,-1)$ [1]。<br>
+                ヒント「解を $e^{\\lambda x}$ とおくと行列をといて入を求める問題に帰着します」に従います [1]。<br>
+                $y_1 = A_1 e^{\\lambda x}, y_2 = A_2 e^{\\lambda x}$ と仮定し、方程式系に代入します。<br>
+                $\\dot{y_1} = \\lambda A_1 e^{\\lambda x}, \\dot{y_2} = \\lambda A_2 e^{\\lambda x}$。<br>
+                $e^{\\lambda x}$ で割ると、<br>
+                $(A)$: $\\lambda A_1 + \\lambda A_2 + 2A_1 + A_2 = 0 \\Rightarrow (\\lambda+2)A_1 + (\\lambda+1)A_2 = 0$ <br>
+                $(B)$: $\\lambda A_2 + 5A_1 + 3A_2 = 0 \\Rightarrow 5A_1 + (\\lambda+3)A_2 = 0$ <br>
+                これは $A_1, A_2$ に関する連立一次方程式です。行列で書くと、
+                <div class="mathjax-block">$$ \\begin{pmatrix} \\lambda+2 & \\lambda+1 \\\\ 5 & \\lambda+3 \\end{pmatrix} \\begin{pmatrix} A_1 \\\\ A_2 \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ 0 \\end{pmatrix} $$</div>
+                $A_1, A_2$ が非自明な解を持つためには、係数行列の行列式がゼロである必要があります。<br>
+                $(\\lambda+2)(\\lambda+3) - 5(\\lambda+1) = 0$ <br>
+                $\\lambda^2 + 5\\lambda + 6 - (5\\lambda + 5) = 0$ <br>
+                $\\lambda^2 + 1 = 0 \\Rightarrow \\lambda^2 = -1$ <br>
+                固有値は $\\lambda = \\pm i$ です。</p>
+                <p><strong>$\\lambda_1 = i$ の場合:</strong><br>
+                $(\\lambda_1+2)A_1 + (\\lambda_1+1)A_2 = (i+2)A_1 + (i+1)A_2 = 0$ <br>
+                $5A_1 + (\\lambda_1+3)A_2 = 5A_1 + (i+3)A_2 = 0$ <br>
+                第1式から $(i+2)A_1 = -(i+1)A_2$。<br>
+                例えば、$A_1 = -(i+1)$ とすると、$A_2 = i+2$。<br>
+                固有ベクトル $v_1 = \\begin{pmatrix} -(i+1) \\\\ i+2 \\end{pmatrix} = \\begin{pmatrix} -1 \\\\ 2 \\end{pmatrix} + i \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix}$。<br>
+                対応する解は $v_1 e^{ix} = (\\begin{pmatrix} -1 \\\\ 2 \\end{pmatrix} + i \\begin{pmatrix} -1 \\\\ 1 \\end{pmatrix})(\\cos x + i\\sin x)$ <br>
+                $= \\begin{pmatrix} -\\cos x + \\sin x \\\\ 2\\cos x - \\sin x \\end{pmatrix} + i \\begin{pmatrix} -\\sin x - \\cos x \\\\ \\sin x + 2\\cos x \\end{pmatrix}$ (計算ミス訂正)<br>
+                $A_1 = -(i+1)K, A_2 = (i+2)K$ <br>
+                $y^{(1)} = \\begin{pmatrix} -(i+1) \\\\ i+2 \\end{pmatrix} e^{ix} = \\begin{pmatrix} -(i+1)(\\cos x + i\\sin x) \\\\ (i+2)(\\cos x + i\\sin x) \\end{pmatrix} = \\begin{pmatrix} (-\\cos x + \\sin x) - i(\\sin x + \\cos x) \\\\ (2\\cos x - \\sin x) + i(\\cos x + 2\\sin x) \\end{pmatrix}$ <br>
+                この解の実部と虚部はそれぞれ線形独立な実数解となります。<br>
+                実部: $\\begin{pmatrix} y_{1,Re} \\\\ y_{2,Re} \\end{pmatrix} = \\begin{pmatrix} -\\cos x + \\sin x \\\\ 2\\cos x - \\sin x \\end{pmatrix}$ <br>
+                虚部: $\\begin{pmatrix} y_{1,Im} \\\\ y_{2,Im} \\end{pmatrix} = \\begin{pmatrix} -(\\sin x + \\cos x) \\\\ \\cos x + 2\\sin x \\end{pmatrix}$</p>
+                <p><strong>$\\lambda_2 = -i$ の場合:</strong><br>
+                これは $\\lambda_1=i$ の場合の共役となり、同様に線形独立な実数解を与えますが、上記の実部と虚部で一般解を構成できます。<br>
+                一般解は、<br>
+                $y_1(x) = K_1(-\\cos x + \\sin x) + K_2(-\\sin x - \\cos x)$ <br>
+                $y_2(x) = K_1(2\\cos x - \\sin x) + K_2(\\cos x + 2\\sin x)$</p>
+                <p>初期条件 $y_1(0)=1, y_2(0)=-1$ を適用します。<br>
+                $x=0$ のとき $\\cos 0 = 1, \\sin 0 = 0$。<br>
+                $y_1(0) = K_1(-1) + K_2(-1) = -K_1 - K_2 = 1 \\quad \\tag{iii}$ <br>
+                $y_2(0) = K_1(2) + K_2(1) = 2K_1 + K_2 = -1 \\quad \\tag{iv}$ <br>
+                $(iii)+(iv)$ より、$K_1 = 0$。<br>
+                $(iii)$ に代入すると、$-K_2 = 1 \\Rightarrow K_2 = -1$。<br>
+                したがって、解は、<br>
+                $y_1(x) = (0)(-\\cos x + \\sin x) + (-1)(-\\sin x - \\cos x) = \\sin x + \\cos x$ <br>
+                $y_2(x) = (0)(2\\cos x - \\sin x) + (-1)(\\cos x + 2\\sin x) = -\\cos x - 2\\sin x$</p>
+                <p>よって、
+                <div class="mathjax-block">$$y_1(x) = \\cos x + \\sin x$$</div>
+                <div class="mathjax-block">$$y_2(x) = -\\cos x - 2\\sin x$$</div>
+                連立微分方程式を行列と固有値問題に帰着させる方法は、多自由度系（例えば結合された振り子や電気回路）の解析に広く用いられる強力な手法です。</p>
+                <h3>4.6 連立2階線形微分方程式 (結合振動)</h3>
+                <p>方程式系: $\\begin{cases}\\frac{d^{2}y_{1}}{dx^{2}}=-y_{1}+2(y_{2}-y_{1}) = -3y_1 + 2y_2 \\\\ \\frac{d^{2}y_{2}}{dx^{2}}=-y_{2}-2(y_{2}-y_{1}) = 2y_1 - 3y_2 \\end{cases}$ [1]。<br>
+                ヒント「最初から行列表示にして、対角化をしてみましょう」に従います [1]。<br>
+                この系は、2つの質点がばねで結合された系の運動方程式に類似しています。<br>
+                ベクトル $\\mathbf{y} = \\begin{pmatrix} y_1 \\\\ y_2 \\end{pmatrix}$ を用いて、行列形式で書くと、
+                <div class="mathjax-block">$$\\frac{d^2}{dx^2} \\mathbf{y} = \\begin{pmatrix} -3 & 2 \\\\ 2 & -3 \\end{pmatrix} \\mathbf{y}$$</div>
+                ここで、行列 $M = \\begin{pmatrix} -3 & 2 \\\\ 2 & -3 \\end{pmatrix}$ です。<br>
+                $M$ の固有値 $-\\omega^2$ と固有ベクトルを求めます。（$\\ddot{y} = -\\omega^2 y$ の形を想定）<br>
+                固有方程式は $\\det(M - (-\\omega^2)I) = 0$ ではなく、$\\mathbf{y}(x) = \\mathbf{v} e^{i\\alpha x}$ のような解を仮定すると、$(-\\alpha^2)\\mathbf{v} = M\\mathbf{v}$ となるので、$M\\mathbf{v} = \\lambda \\mathbf{v}$ (ここで $\\lambda = -\\alpha^2$) の固有値問題を解きます。<br>
+                $\\det(M - \\lambda I) = 0$
+                <div class="mathjax-block">$$\\begin{vmatrix} -3-\\lambda & 2 \\\\ 2 & -3-\\lambda \\end{vmatrix} = (-3-\\lambda)^2 - 4 = 0$$</div>
+                $(\\lambda+3)^2 - 4 = 0 \\Rightarrow \\lambda+3 = \\pm 2$ <br>
+                $\\lambda_1 = -3+2 = -1$ <br>
+                $\\lambda_2 = -3-2 = -5$</p>
+                <p>固有値 $\\lambda_1 = -1$ (すなわち $-\\omega_1^2 = -1 \\Rightarrow \\omega_1 = 1$):<br>
+                $(M - \\lambda_1 I)\\mathbf{v}_1 = 0$
+                <div class="mathjax-block">$$\\begin{pmatrix} -3-(-1) & 2 \\\\ 2 & -3-(-1) \\end{pmatrix} \\begin{pmatrix} v_{11} \\\\ v_{12} \\end{pmatrix} = \\begin{pmatrix} -2 & 2 \\\\ 2 & -2 \\end{pmatrix} \\begin{pmatrix} v_{11} \\\\ v_{12} \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ 0 \\end{pmatrix}$$</div>
+                $-2v_{11} + 2v_{12} = 0 \\Rightarrow v_{11} = v_{12}$。固有ベクトル $\\mathbf{v}_1 = \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix}$ (正規化すると $\\frac{1}{\\sqrt{2}}\\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix}$)。</p>
+                <p>固有値 $\\lambda_2 = -5$ (すなわち $-\\omega_2^2 = -5 \\Rightarrow \\omega_2 = \\sqrt{5}$):<br>
+                $(M - \\lambda_2 I)\\mathbf{v}_2 = 0$
+                <div class="mathjax-block">$$\\begin{pmatrix} -3-(-5) & 2 \\\\ 2 & -3-(-5) \\end{pmatrix} \\begin{pmatrix} v_{21} \\\\ v_{22} \\end{pmatrix} = \\begin{pmatrix} 2 & 2 \\\\ 2 & 2 \\end{pmatrix} \\begin{pmatrix} v_{21} \\\\ v_{22} \\end{pmatrix} = \\begin{pmatrix} 0 \\\\ 0 \\end{pmatrix}$$</div>
+                $2v_{21} + 2v_{22} = 0 \\Rightarrow v_{21} = -v_{22}$。固有ベクトル $\\mathbf{v}_2 = \\begin{pmatrix} 1 \\\\ -1 \\end{pmatrix}$ (正規化すると $\\frac{1}{\\sqrt{2}}\\begin{pmatrix} 1 \\\\ -1 \\end{pmatrix}$)。</p>
+                <p>行列 $M$ は実対称行列なので、固有ベクトルは直交します。<br>
+                $\\mathbf{v}_1 \\cdot \\mathbf{v}_2 = (1)(1) + (1)(-1) = 0$。<br>
+                直交行列 $P = (\\mathbf{v}_1 \\mathbf{v}_2) = \\begin{pmatrix} 1 & 1 \\\\ 1 & -1 \\end{pmatrix}$ (正規化しなくてもよいが、正規化すると $P^{-1}=P^T$ となる)。<br>
+                基準座標 $\\mathbf{z} = \\begin{pmatrix} z_1 \\\\ z_2 \\end{pmatrix}$ を $\\mathbf{y} = P\\mathbf{z}$ で導入します。<br>
+                $\\frac{d^2}{dx^2} (P\\mathbf{z}) = M(P\\mathbf{z}) \\Rightarrow P\\frac{d^2}{dx^2}\\mathbf{z} = MP\\mathbf{z}$ <br>
+                $\\frac{d^2}{dx^2}\\mathbf{z} = P^{-1}MP\\mathbf{z} = D\\mathbf{z}$ <br>
+                ここで $D$ は固有値を対角成分とする対角行列です。
+                <div class="mathjax-block">$$D = \\begin{pmatrix} \\lambda_1 & 0 \\\\ 0 & \\lambda_2 \\end{pmatrix} = \\begin{pmatrix} -1 & 0 \\\\ 0 & -5 \\end{pmatrix}$$</div>
+                これにより、分離された方程式が得られます。<br>
+                $\\frac{d^2 z_1}{dx^2} = -1 z_1 = -\\omega_1^2 z_1 \\Rightarrow \\ddot{z}_1 + \\omega_1^2 z_1 = 0 \\quad (\\omega_1=1)$ <br>
+                $\\frac{d^2 z_2}{dx^2} = -5 z_2 = -\\omega_2^2 z_2 \\Rightarrow \\ddot{z}_2 + \\omega_2^2 z_2 = 0 \\quad (\\omega_2=\\sqrt{5})$ <br>
+                これらの解は、<br>
+                $z_1(x) = A_1 \\cos(\\omega_1 x + \\phi_1) = A_1 \\cos(x + \\phi_1)$ <br>
+                $z_2(x) = A_2 \\cos(\\omega_2 x + \\phi_2) = A_2 \\cos(\\sqrt{5}x + \\phi_2)$ <br>
+                元の座標 $y_1, y_2$ の一般解は $\\mathbf{y} = P\\mathbf{z}$ より、
+                <div class="mathjax-block">$$y_1(x) = z_1(x) + z_2(x) = A_1 \\cos(x + \\phi_1) + A_2 \\cos(\\sqrt{5}x + \\phi_2)$$</div>
+                <div class="mathjax-block">$$y_2(x) = z_1(x) - z_2(x) = A_1 \\cos(x + \\phi_1) - A_2 \\cos(\\sqrt{5}x + \\phi_2)$$</div>
+                ここで $A_1, A_2, \\phi_1, \\phi_2$ は初期条件から決定される任意定数です。</p>
+                <p>この行列の対角化という数学的操作は、物理的には結合された振動系を、互いに独立に振動する基準振動（ノーマルモード）に分離することに対応します。各ノーマルモードは固有の角振動数 $\\omega_k$ を持ちます。<br>
+                $z_1$ モード ($\\omega_1=1$): $y_1=y_2$、つまり2つの質点が同相で振動するモード。<br>
+                $z_2$ モード ($\\omega_2=\\sqrt{5}$): $y_1=-y_2$、つまり2つの質点が逆相で振動するモード。<br>
+                この問題で「実対称行列なので直交行列で対角化され」とあるのは重要な指摘です [1]。物理系の多くの方程式は（特にエネルギー保存則から導かれる運動方程式は）対称な行列で記述され、その結果、直交する固有ベクトル（物理的には独立した運動パターン）が存在することが保証されます。これは複雑な振動系の解析における基本戦略です。</p>`
+            },
+            q5: {
+                title: '第5問：1階常微分方程式',
+                content: `<h2>第5問：1階常微分方程式 [1]</h2>
+                <p>このセクションでは、様々なタイプの1階常微分方程式を解きます。</p>
+                <h3>5.1 変数分離形</h3>
+                <p>方程式: $\\frac{dy}{dx}=\\frac{y-2}{x}$ [1]。<br>
+                これは変数分離形の微分方程式です。$y \\neq 2, x \\neq 0$ の仮定のもと、変数を分離します。
+                <div class="mathjax-block">$$\\frac{1}{y-2}dy = \\frac{1}{x}dx$$</div>
+                両辺を積分します。
+                <div class="mathjax-block">$$\\int \\frac{1}{y-2}dy = \\int \\frac{1}{x}dx$$</div>
+                <div class="mathjax-block">$$\\ln|y-2| = \\ln|x| + C'$$</div>
+                ここで $C'$ は積分定数です。<br>
+                対数の性質を用いて整理します。<br>
+                $\\ln|y-2| - \\ln|x| = C'$ <br>
+                $\\ln\\left|\\frac{y-2}{x}\\right| = C'$ <br>
+                $\\left|\\frac{y-2}{x}\\right| = e^{C'}$ <br>
+                $\\frac{y-2}{x} = \\pm e^{C'}$ <br>
+                $\\pm e^{C'}$ を新たな任意定数 $C$ とおくと、<br>
+                $\\frac{y-2}{x} = C$ <br>
+                $y-2 = Cx$ <br>
+                したがって、一般解は、
+                <div class="mathjax-block">$$y(x) = Cx + 2$$</div>
+                また、$y=2$ も元の微分方程式 $\\frac{dy}{dx}=0, \\frac{y-2}{x}=0$ を満たす解です。これは $C=0$ の場合に相当します。<br>
+                変数分離形は1階ODEの最も基本的な解法の一つであり、多くの物理過程（例えば放射性崩壊や人口増加モデルの単純なケース）で現れます。</p>
+                <h3>5.2 同次形</h3>
+                <p>方程式: $2xydx+(y^{2}-3x^{2})dy=0$ [1]。<br>
+                まず、$\\frac{dy}{dx}$ の形に書き直します。<br>
+                $(y^2-3x^2)dy = -2xydx$
+                <div class="mathjax-block">$$\\frac{dy}{dx} = \\frac{-2xy}{y^2-3x^2}$$</div>
+                右辺の分子・分母を $x^2$ で割ると ($x \\neq 0$ として)、
+                <div class="mathjax-block">$$\\frac{dy}{dx} = \\frac{-2(y/x)}{(y/x)^2-3}$$</div>
+                これは $\\frac{dy}{dx} = f(y/x)$ の形をしているので、同次形の微分方程式です。<br>
+                $u = y/x$ とおくと、$y = ux$ です。これを $x$ で微分すると、<br>
+                $\\frac{dy}{dx} = \\frac{d(ux)}{dx} = 1\\cdot u + x\\frac{du}{dx} = u + x\\frac{du}{dx}$ <br>
+                元の式に代入すると、<br>
+                $u + x\\frac{du}{dx} = \\frac{-2u}{u^2-3}$ <br>
+                $x\\frac{du}{dx} = \\frac{-2u}{u^2-3} - u = \\frac{-2u - u(u^2-3)}{u^2-3} = \\frac{-2u - u^3 + 3u}{u^2-3} = \\frac{u-u^3}{u^2-3}$ <br>
+                これは $u$ と $x$ に関する変数分離形の方程式です。
+                <div class="mathjax-block">$$\\frac{u^2-3}{u-u^3}du = \\frac{1}{x}dx$$</div>
+                左辺を部分分数分解します。<br>
+                $\\frac{u^2-3}{u(1-u^2)} = \\frac{u^2-3}{u(1-u)(1+u)} = \\frac{A}{u} + \\frac{B}{1-u} + \\frac{D}{1+u}$ <br>
+                $A(1-u^2) + Bu(1+u) + Du(1-u) = u^2-3$ <br>
+                $u=0 \\Rightarrow A = -3$ <br>
+                $u=1 \\Rightarrow B(1)(2) = 1-3 = -2 \\Rightarrow 2B = -2 \\Rightarrow B = -1$ <br>
+                $u=-1 \\Rightarrow D(-1)(2) = 1-3 = -2 \\Rightarrow -2D = -2 \\Rightarrow D = 1$ <br>
+                よって、
+                <div class="mathjax-block">$$\\left( \\frac{-3}{u} - \\frac{1}{1-u} + \\frac{1}{1+u} \\right) du = \\frac{1}{x}dx$$</div>
+                積分すると、<br>
+                $-3\\ln|u| + \\ln|1-u| + \\ln|1+u| = \\ln|x| + C'$ <br>
+                $\\ln\\left|\\frac{(1-u)(1+u)}{u^3}\\right| = \\ln|x| + C'$ <br>
+                $\\ln\\left|\\frac{1-u^2}{u^3}\\right| = \\ln|Cx|$ (ここで $e^{C'}$ を $C$ とした) <br>
+                $\\frac{1-u^2}{u^3} = Cx$ <br>
+                $u=y/x$ を代入すると、<br>
+                $\\frac{1-(y/x)^2}{(y/x)^3} = Cx$ <br>
+                $\\frac{(x^2-y^2)/x^2}{y^3/x^3} = Cx$ <br>
+                $\\frac{x(x^2-y^2)}{y^3} = Cx$ <br>
+                $x^2-y^2 = C y^3$ (ただし $x=0$ の場合は別途考慮) <br>
+                これが陰関数形式での一般解です。同次形の微分方程式は、$y/x$ の置換によって変数分離形に変換できるという特定の手順で解くことができます。</p>
+                <h3>5.3 完全微分形 (積分因子)</h3>
+                <p>方程式: $xdy=(y-x)dx$ [1]。<br>
+                ヒント「そのままでは完全微分形にはなっていません、適当など $\\xi(x)$ という関数を両辺にかけ合わせて これが完全微分形になるようにとの関数形を決めてから解きます」に従います [1]。<br>
+                まず、方程式を $M(x,y)dx + N(x,y)dy = 0$ の形に整理します。<br>
+                $(y-x)dx - xdy = 0$ (PDFの解答に合わせて符号を調整) <br>
+                ここで、$M(x,y) = y-x$, $N(x,y) = -x$ です。<br>
+                完全微分形であるための条件は $\\frac{\\partial M}{\\partial y} = \\frac{\\partial N}{\\partial x}$ です。<br>
+                $\\frac{\\partial M}{\\partial y} = \\frac{\\partial}{\\partial y}(y-x) = 1$ <br>
+                $\\frac{\\partial N}{\\partial x} = \\frac{\\partial}{\\partial x}(-x) = -1$ <br>
+                これらは等しくないので、完全微分形ではありません。PDFの解答では $(x-y)dx + xdy = 0$ を元に積分因子を求めているため、それに合わせます。
+                方程式を $(x-y)dx + xdy = 0$ と書き直して進めます。<br>
+                $M(x,y) = x-y$, $N(x,y) = x$.<br>
+                $\\frac{\\partial M}{\\partial y} = -1$, $\\frac{\\partial N}{\\partial x} = 1$. これらは等しくないので、完全微分形ではありません。<br>
+                積分因子 $\\xi(x)$ を両辺に掛けると、<br>
+                $\\xi(x)(x-y)dx + \\xi(x)xdy = 0$ <br>
+                これが完全微分形になる条件は、<br>
+                $\\frac{\\partial}{\\partial y}(\\xi(x)(x-y)) = \\frac{\\partial}{\\partial x}(\\xi(x)x)$ <br>
+                $\\xi(x)\\frac{\\partial}{\\partial y}(x-y) = \\frac{d\\xi}{dx}x + \\xi(x)\\frac{d}{dx}(x)$ <br>
+                $\\xi(x)(-1) = x\\frac{d\\xi}{dx} + \\xi(x)(1)$ <br>
+                $-\\xi(x) = x\\frac{d\\xi}{dx} + \\xi(x)$ <br>
+                $x\\frac{d\\xi}{dx} = -2\\xi(x)$ <br>
+                $\\frac{d\\xi}{\\xi} = -2\\frac{dx}{x}$ (ただし $\\xi \\neq 0, x \\neq 0$) <br>
+                両辺を積分すると、<br>
+                $\\ln|\\xi| = -2\\ln|x| + C_0 = \\ln|x^{-2}| + C_0 = \\ln(x^{-2}) + C_0$ <br>
+                $\\xi = e^{C_0} x^{-2}$ <br>
+                積分因子として $\\xi(x) = x^{-2}$ (定数倍は任意なので $e^{C_0}=1$ とした) を選びます。<br>
+                元の方程式 $(x-y)dx + xdy = 0$ に $\\xi(x)=x^{-2}$ を掛けると、<br>
+                $x^{-2}(x-y)dx + x^{-2}xdy = 0$ <br>
+                $(\\frac{1}{x}-\\frac{y}{x^2})dx + \\frac{1}{x}dy = 0$ <br>
+                これが新しい $M'(x,y)dx + N'(x,y)dy = 0$ です。<br>
+                $M' = \\frac{1}{x}-\\frac{y}{x^2}$, $N' = \\frac{1}{x}$ <br>
+                $\\frac{\\partial M'}{\\partial y} = -\\frac{1}{x^2}$ <br>
+                $\\frac{\\partial N'}{\\partial x} = -\\frac{1}{x^2}$ <br>
+                これらは等しいので、方程式は完全微分形になりました。<br>
+                よって、ある関数 $F(x,y)$ が存在して、$dF = M'dx + N'dy = 0$ と書けます。<br>
+                $\\frac{\\partial F}{\\partial x} = M' = \\frac{1}{x}-\\frac{y}{x^2}$ <br>
+                $\\frac{\\partial F}{\\partial y} = N' = \\frac{1}{x}$ <br>
+                第2式を $y$ で積分すると、<br>
+                $F(x,y) = \\int \\frac{1}{x} dy + g(x) = \\frac{y}{x} + g(x)$ <br>
+                これを $x$ で偏微分すると、<br>
+                $\\frac{\\partial F}{\\partial x} = -\\frac{y}{x^2} + g'(x)$ <br>
+                これが $M'$ と等しいので、<br>
+                $-\\frac{y}{x^2} + g'(x) = \\frac{1}{x}-\\frac{y}{x^2}$ <br>
+                $g'(x) = \\frac{1}{x}$ <br>
+                $g(x) = \\int \\frac{1}{x}dx = \\ln|x|$ (積分定数は最終的な解の定数に含める) <br>
+                したがって、$F(x,y) = \\frac{y}{x} + \\ln|x|$ <br>
+                解は $F(x,y) = C_1$ (任意定数) なので、
+                <div class="mathjax-block">$$\\frac{y}{x} + \\ln|x| = C_1$$</div>
+                または、$y = C_1 x - x\\ln|x|$。<br>
+                完全微分方程式は $dF(x,y)=0$ の形に書けるため直接積分できますが、そうでない場合でも積分因子を掛けることで完全微分形に変換できる場合があります。この概念は熱力学における状態量や積分因子の役割（例えばエントロピー変化 $dS = \\delta Q_{rev}/T$ における $1/T$）と深いつながりがあります。</p>`
+            },
+            summary: {
+                title: '総括',
+                content: `<h2>総括</h2>
+                <p>本演習問題集「力学演習問題 その1」[1] を通じて、ベクトル解析の基本公式、極座標系における運動の記述、様々な質点の運動の解析、そして物理現象のモデル化に不可欠な常微分方程式の解法といった、古典力学の基礎をなす重要な数学的手法が網羅的に扱われました。</p>
+                <p>第1問では、スカラー三重積やベクトル三重積といったベクトル代数の基本法則の理解を深め、それらが幾何学的解釈やベクトル量の操作にどのように役立つかを確認しました。また、相反的なベクトルの構成は、座標系の取り方や双対空間の概念への導入となりました。特に、$\\nabla \\times (\\nabla U) = 0$ は保存力の概念と直結し、物理学におけるポテンシャルの重要性を示唆しています。</p>
+                <p>第2問では、極座標という非直交曲線座標系における速度と加速度の導出を通じて、基底ベクトル自体の時間変化を考慮する必要性を学びました。これは回転座標系や一般相対性理論におけるより複雑な座標変換の理解に向けた第一歩です。等速円運動の解析は、異なる座標系での物理法則の表現がどのように変わるか、そして問題の対称性に合わせた座標系の選択がいかに有効かを示しました。</p>
+                <p>第3問では、具体的な時間関数で与えられた質点の運動から速度を求める基本的な kinematic な計算に加え、Taylor展開やEulerの公式といった数学的ツールが、運動の表現や異なる運動形態（指数関数的運動と円運動など）の関連付けにどのように用いられるかを見ました。</p>
+                <p>第4問および第5問では、物理学の多くの分野で現れる常微分方程式の解法に焦点を当てました。特性方程式を用いた同次方程式の解法、未定係数法や重ね合わせの原理による非同次方程式の解法、そして連立微分方程式の行列を用いた解法（特に基準振動への分解）は、力学系（振動子、結合系など）のダイナミクスを理解するための強力な道具です。変数分離形、同次形、完全微分形（積分因子を含む）といった1階ODEの解法も、基本的な物理モデルを扱う上で必須の技術です。</p>
+                <p>これらの問題群は、個々の数学的技法を習得するだけでなく、それらが物理現象の記述と予測という大きな枠組みの中でどのように連携し、力学体系の理解を深める上でどのように貢献するかを示しています。物理現象を数学的にモデル化し、そのモデルを解くという一連のプロセスは、物理学徒にとって最も基本的な素養の一つであり、本演習はそのための確かな土台を築くものと言えるでしょう。</p>`
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('main-content');
+            const navLinks = document.querySelectorAll('.nav-link');
+            let currentSection = 'preface';
+
+            function setActiveLink(sectionId) {
+                navLinks.forEach(link => {
+                    if (link.dataset.section === sectionId) {
+                        link.classList.add('active-nav');
+                    } else {
+                        link.classList.remove('active-nav');
+                    }
+                });
+            }
+
+            function displaySection(sectionId) {
+                if (sectionsData[sectionId]) {
+                    mainContent.innerHTML = sectionsData[sectionId].content;
+                    currentSection = sectionId;
+                    setActiveLink(sectionId);
+                    // Ensure MathJax typesets the new content
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        window.MathJax.typesetPromise([mainContent])
+                            .catch((err) => console.error('MathJax typesetting error: ', err));
+                    }
+                } else {
+                    mainContent.innerHTML = '<p class="text-red-500">指定されたセクションは見つかりませんでした。</p>';
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const sectionId = link.dataset.section;
+                    if (sectionId) {
+                        displaySection(sectionId);
+                    }
+                });
+            });
+
+            // Display default section on load
+            displaySection(currentSection);
+        });
+    </script>
+</body>
+</html>
